@@ -125,7 +125,7 @@
 
                                         <button onclick=deleteUser('${user._id}')> Delete User </button>
 
-                                        <button onclick=editUserDetails('${user._id}','${user.name}','${user.phonenumber}')>Edit User </button>
+                                        <button onclick=editUserDetails('${user.email}','${user.name}','${user.phonenumber}','${user._id}')>Edit User </button>
 
                                      </li>`
 
@@ -141,7 +141,7 @@
 
 
 
-            function editUserDetails(emailId, name, phonenumber){
+            function editUserDetails(emailId, name, phonenumber, userId){
 
 
 
@@ -153,7 +153,7 @@
 
 
 
-                deleteUser(emailId)
+                deleteUser(userId)
 
              }
 
