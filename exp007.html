@@ -1,0 +1,170 @@
+<html>
+
+    <body>
+
+        <form  onsubmit="saveToLocalStorage(event)">
+
+            <label> Expense Amount </label>
+
+            <input id='expense' type="text" name="expense"  required/>
+
+            <label> Choose Description </label>
+
+            <input id='desc' type="text" name="descId"  required/>
+
+            <label for="cat1"> Choose a Category </label>
+              <select id="cat1" name="cat">
+                <option value="fuel">Fuel</option>
+                <option value="movie">Movie</option>
+                <option value="elec">Electricty</option>
+                <option value="diesel">Diesel</option>
+              </select>
+             <button> Submit </button>
+
+        </form>
+
+        <ul id='listOfUsers'></ul>
+        <script 
+               src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js">
+        </script>
+
+        <script>
+
+            function saveToLocalStorage(event) {
+
+                event.preventDefault();
+
+                const expense = event.target.expense.value;
+
+                const desc = event.target.descId.value;
+
+                const cat = event.target.cat.value;
+
+                const obj = {
+
+                    expense,
+
+                    desc,
+
+                    cat
+
+                }
+
+                axios.post("https://crudcrud.com/api/378931660e6c4a74ad02d34fab6503b4/appointmentData", obj)
+                .then((response) => {
+                    showNewUserOnScreen(response.data);
+                    console.log(response);
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+
+            }
+
+            window.addEventListener("DOMContentLoaded", () => {
+                axios.get("https://crudcrud.com/api/378931660e6c4a74ad02d34fab6503b4/appointmentData")
+                .then((response) => {
+                    console.log(response);
+
+                    for(var i=0; i< response.data.length; i++)
+                    {
+                        showNewUserOnScreen(response.data[i]);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+
+
+})
+
+function showNewUserOnScreen(user){
+
+document.getElementById('desc').value = '';
+
+document.getElementById('expense').value = '';
+
+document.getElementById('cat1').value ='';
+
+if(localStorage.getItem(user.desc) !== null){
+
+    removeUserFromScreen(user.desc);
+
+}
+
+const parentNode = document.getElementById('listOfUsers');
+
+                const childHTML = `<li id=${user._id} > ${user.expense} - ${user.desc} - ${user.cat1}
+
+                                        <button onclick=deleteUser('${user._id}')> Delete User </button>
+
+                                        <button onclick=editUserDetails('${user.desc}','${user.expense}','${user.cat1}','${user._id}')> Edit User </button>
+
+                                     </li>`
+
+
+
+                parentNode.innerHTML = parentNode.innerHTML + childHTML;
+
+            }
+
+            //Edit User
+
+
+
+            function editUserDetails(descId, expense, cat, userId){
+
+
+
+                document.getElementById('desc').value = descId;
+
+                document.getElementById('expense').value = expense;
+
+                document.getElementById('cat1').value = cat;
+
+
+
+            deleteUser(userId);
+
+}
+
+// deleteUser
+
+
+
+function deleteUser(userId){
+
+    axios.delete(`https://crudcrud.com/api/378931660e6c4a74ad02d34fab6503b4/appointmentData/${userId}`)
+                    .then((response) => {
+                        removeUserFromScreen(userId);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+
+
+
+}
+
+function removeUserFromScreen(userId){
+
+const parentNode = document.getElementById('listOfUsers');
+
+const childNodeToBeDeleted = document.getElementById(userId);
+
+if(childNodeToBeDeleted) {
+
+    parentNode.removeChild(childNodeToBeDeleted);
+}
+
+}
+
+</script>
+
+
+
+
+
+</body>
+
+</html>
